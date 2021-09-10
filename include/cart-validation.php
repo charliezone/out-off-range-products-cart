@@ -18,7 +18,7 @@ Class CartValidation
         $this->cart = $cart;
     }
 
-    public function validateEcuador( $product_id )
+    public function validateEcuador( $product_id, $quantity )
     {
         $product = wc_get_product( $product_id );
         $region = $this->getRegion( $product->get_name() );
@@ -28,16 +28,16 @@ Class CartValidation
             $ecuador = new CartModelEcuador($this->cart);
 
             if( $this->isMiscelaneas( $tipo_mercancia ) ){
-                return $ecuador->getCartItems()['miscelaneas'] < 10;
+                return $ecuador->getCartItems()['miscelaneas'] + $quantity <= 10;
             }else {
-                return $ecuador->getCartItems()['no miscelaneas'] < 2;
+                return $ecuador->getCartItems()['no miscelaneas'] + $quantity <= 2;
             }
         }else{
             return true;
         }
     }
 
-    public function validatePanama($product_id)
+    public function validatePanama($product_id, $quantity)
     {
         $product = wc_get_product( $product_id );
         $region = $this->getRegion( $product->get_name() );
@@ -47,16 +47,16 @@ Class CartValidation
             $panama = new CartModelPanama($this->cart);
 
             if( $this->isMiscelaneas( $tipo_mercancia ) ){
-                return $panama->getCartItems()['miscelaneas'] < 9;
+                return $panama->getCartItems()['miscelaneas'] + $quantity <= 9;
             }else {
-                return $panama->getCartItems()['no miscelaneas'] < 2;
+                return $panama->getCartItems()['no miscelaneas'] + $quantity <= 2;
             }
         }else{
             return true;
         }
     }
 
-    public function validateMaritimo($product_id)
+    public function validateMaritimo($product_id, $quantity)
     {
         $product = wc_get_product( $product_id );
         $region = $this->getRegion( $product->get_name() );
@@ -64,7 +64,7 @@ Class CartValidation
         if( $region == 'Maritimo' ) {
             $maritimo = new CartModelMaritimo($this->cart);
 
-            return $maritimo->getCartItems() < 2;
+            return $maritimo->getCartItems() + $quantity <= 2;
         }else{
             return true;
         }

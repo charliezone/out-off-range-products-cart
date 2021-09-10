@@ -18,12 +18,9 @@ function oorpc_validate_add_cart_item( $passed, $product_id, $quantity, $variati
 
     $validation = new CartValidation(WC()->cart);
 
-    /* var_dump( $validation->validateEcuador($product_id) );
-    var_dump( $validation->validatePanama($product_id) );
-    var_dump($validation->validateMaritimo($product_id));
-    wp_die(); */
-
-    if ( !$validation->validateEcuador($product_id) || !$validation->validatePanama($product_id) || !$validation->validateMaritimo($product_id) ){
+    if( 
+        !$validation->validateEcuador($product_id, $quantity) || !$validation->validatePanama($product_id, $quantity)  || !$validation->validateMaritimo($product_id, $quantity) 
+      ){
         $passed = false;
         wc_add_notice( 'Usted no puede agregar más productos de este tipo porque incumple con las regulaciones aduanales', 'error' );
     }
@@ -32,3 +29,11 @@ function oorpc_validate_add_cart_item( $passed, $product_id, $quantity, $variati
 }
 
 add_filter( 'woocommerce_add_to_cart_validation', 'oorpc_validate_add_cart_item', 10, 5 );
+
+add_action("wp_enqueue_scripts", "oorpc_scripts_and_styles");
+
+function oorpc_scripts_and_styles(){
+    wp_enqueue_style( 'oorpc-app-style', plugin_dir_url(__FILE__).'assets/css/app.css', '1.0' );
+
+    wp_enqueue_script( 'traking-app-js', plugin_dir_url(__FILE__).'assets/js/app.js', array('react-dom-js'), array('jquery'), '1.0' );
+}
